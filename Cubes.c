@@ -113,7 +113,7 @@ void main() {
     Cube c;
     for (double i = 0; i<=4*pi; i+=(pi/64)) {
         c = cube(15, 4, cos(i), sin(i));
-        display(c, 200);
+        display(c, 60);
     }
 }
 */
