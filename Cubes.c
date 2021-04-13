@@ -13,14 +13,14 @@ typedef struct define{
 
 void display(Cube cube, int latency) {
     clrscr();
-    int _, __, lp, sp;
+    int _, __, lp;
     lp = (cube.p1[0]>=cube.p2[0]&&cube.p1[0]>cube.p3[0]&&cube.p1[0]>cube.p4[0])?cube.p1[0]:
         ((cube.p2[0]>cube.p3[0]&&cube.p2[0]>cube.p4[0])?cube.p2[0]:((cube.p3[0]>=cube.p4[0])?cube.p3[0]:cube.p4[0]));
-    sp = (cube.p1[0]<=cube.p2[0]&&cube.p1[0]<cube.p3[0]&&cube.p1[0]<cube.p4[0])?cube.p1[0]:
-        ((cube.p2[0]<cube.p3[0]&&cube.p2[0]<cube.p4[0])?cube.p2[0]:((cube.p3[0]<=cube.p4[0])?cube.p3[0]:cube.p4[0]));
     for (_=1; _<cube.p1[1]+cube.len; _++) {
         if (_ < cube.p4[1]);
         else {
+            double m;
+            int y1, x2, hw;
             if (_<=cube.p1[1]) {
                 if (_==cube.p4[1]) {
                     if (cube.p3[0]<cube.p4[0]) {
@@ -46,7 +46,37 @@ void display(Cube cube, int latency) {
                             else printf(".");
                         }
                     }
-                } else {}
+                } else {
+                    if (cube.p4[0]!=cube.p1[0]) {
+                        m = (double)(cube.p4[1]-cube.p1[1])/(cube.p4[0]-cube.p1[0]);
+                        hw = abs((cube.p3[0]-cube.p2[0])/2);
+                        for (__=1; __<=lp; __++) {
+                            y1 = round((m*__)-(m*cube.p1[0])+cube.p1[1]);
+                            x2 = round((_-cube.p3[1])/m + cube.p3[0]);
+                            if (y1 == (round((m*(__-1))-(m*cube.p1[0])+cube.p1[1]))) y1 = -1;
+                            if ((__==cube.p4[0]&&cube.p4[0]>cube.p3[0])||(__==cube.p3[0]&&cube.p4[0]>cube.p3[0])
+                                ||(_==y1&&__<=(hw+cube.p1[0]))||(__==x2&&__<=(hw+cube.p2[0]))) printf("*");
+                            else if ((__==cube.p4[0]&&cube.p4[0]<=cube.p3[0])||(__==cube.p3[0]&&cube.p4[0]<=cube.p3[0])
+                                    ||(_==y1&&__>(hw+cube.p1[0]))||(__==x2&&__>(hw+cube.p2[0]))) printf(".");
+                            else printf(" ");
+                        }
+                    } else {
+                        hw = (cube.p1[1]-cube.p4[1])/2;
+                        if (cube.p4[0]<cube.p3[0]) {
+                            for (__=1; __<=lp; __++) {
+                                if ((_<=hw+cube.p4[1])&&(__==cube.p3[0]||__==cube.p4[0])) printf(".");
+                                else if ((_>hw+cube.p4[1])&&(__==cube.p3[0]||__==cube.p4[0])) printf("*");
+                                else printf(" ");
+                            }
+                        } else {
+                            for (__=1; __<=lp; __++) {
+                                if ((__==cube.p3[0]||__==cube.p4[0])) printf("*");
+                                else printf(" ");
+                            }
+                        }
+                    }
+                    
+                }
             } else if (_<cube.p4[1]+cube.len-1) {
                 for (__=1; __<=lp;__++) {
                     if ((__==cube.p1[0]&&cube.p1[0]<=cube.p2[0])||(__==cube.p3[0]&&cube.p3[0]<=cube.p4[0])
@@ -82,7 +112,36 @@ void display(Cube cube, int latency) {
                             else printf(".");
                         }
                     }
-                } else {}
+                } else {
+                    if (cube.p4[0]!=cube.p1[0]) {
+                        m = (double)(cube.p4[1]-cube.p1[1])/(cube.p4[0]-cube.p1[0]);
+                        hw = abs((cube.p3[0]-cube.p2[0])/2);
+                        for (__=1; __<=lp; __++) {
+                            y1 = round((m*__)-(m*cube.p1[0])+cube.p1[1]+cube.len-1);
+                            x2 = round((_-cube.p3[1]-cube.len+1)/m + cube.p3[0]);
+                            if (y1 == (round((m*(__-1))-(m*cube.p1[0])+cube.p1[1]+cube.len-1))) y1 = -1;
+                            if ((__==cube.p1[0]&&cube.p2[0]>cube.p1[0])||(__==cube.p2[0]&&cube.p2[0]>cube.p1[0])
+                                ||(_==y1&&__<=(hw+cube.p1[0]))||(__==x2&&__<=(hw+cube.p2[0]))) printf("*");
+                            else if ((__==cube.p1[0]&&cube.p2[0]<=cube.p1[0])||(__==cube.p2[0]&&cube.p2[0]<=cube.p1[0])
+                                    ||(_==y1&&__>(hw+cube.p1[0]))||(__==x2&&__>(hw+cube.p2[0]))) printf(".");
+                            else printf(" ");
+                        }
+                    } else {
+                        hw = (cube.p1[1]-cube.p4[1])/2;
+                        if (cube.p4[0]<cube.p3[0]) {
+                            for (__=1; __<=lp; __++) {
+                                if ((_<=hw+cube.p4[1]+cube.len-1)&&(__==cube.p3[0]||__==cube.p4[0])) printf(".");
+                                else if ((_>hw+cube.p4[1]+cube.len-1)&&(__==cube.p3[0]||__==cube.p4[0])) printf("*");
+                                else printf(" ");
+                            }
+                        } else {
+                            for (__=1; __<=lp; __++) {
+                                if ((__==cube.p3[0]||__==cube.p4[0])) printf("*");
+                                else printf(" ");
+                            }
+                        }
+                    }
+                }
             }
         } printf("\n");
     } usleep(latency*1000);
@@ -108,12 +167,13 @@ Cube cube(int length, short view, double x_i, double z_i) {
     return cube; 
 }
 
-/* For rotating cube 2 times around Y-axis.
+/*
 void main() {
+    // For rotating cube 2 times around Y-axis.
     Cube c;
-    for (double i = 0; i<=4*pi; i+=(pi/64)) {
-        c = cube(15, 4, cos(i), sin(i));
-        display(c, 60);
+    for (double i = 0; i<=10*pi; i+=(pi/64)) {
+        c = cube(30, 5, cos(i), sin(i));
+        display(c, 30);
     }
 }
 */
