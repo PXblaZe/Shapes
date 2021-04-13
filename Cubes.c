@@ -55,9 +55,11 @@ void display(Cube cube, int latency) {
                             x2 = round((_-cube.p3[1])/m + cube.p3[0]);
                             if (y1 == (round((m*(__-1))-(m*cube.p1[0])+cube.p1[1]))) y1 = -1;
                             if ((__==cube.p4[0]&&cube.p4[0]>cube.p3[0])||(__==cube.p3[0]&&cube.p4[0]>cube.p3[0])
-                                ||(_==y1&&__<=(hw+cube.p1[0]))||(__==x2&&__<=(hw+cube.p2[0]))) printf("*");
+                                ||(_==y1&&__<=(hw+cube.p1[0]))||(__==x2&&__<=(hw+cube.p2[0]))) 
+                                printf("*");
                             else if ((__==cube.p4[0]&&cube.p4[0]<=cube.p3[0])||(__==cube.p3[0]&&cube.p4[0]<=cube.p3[0])
-                                    ||(_==y1&&__>(hw+cube.p1[0]))||(__==x2&&__>(hw+cube.p2[0]))) printf(".");
+                                    ||(_==y1&&__>(hw+cube.p1[0]))||(__==x2&&__>(hw+cube.p2[0]))) 
+                                    printf(".");
                             else printf(" ");
                         }
                     } else {
@@ -171,9 +173,18 @@ Cube cube(int length, short view, double x_i, double z_i) {
 void main() {
     // For rotating cube 2 times around Y-axis.
     Cube c;
-    for (double i = 0; i<=10*pi; i+=(pi/64)) {
-        c = cube(30, 5, cos(i), sin(i));
-        display(c, 30);
+    int len, view, nrotate, latency;
+    printf("Enter the length of cuboid: ");
+    scanf("%i", &len);
+    printf("Enter the inclination of cube on y-axis: ");
+    scanf("%i", &view);
+    printf("Enter the no. of times to rotate cube: ");
+    scanf("%i", &nrotate);
+    printf("Enter the latency in ms: ");
+    scanf("%i", &latency);
+    for (double i = 0; i<=2*nrotate*pi; i+=(pi/128)) {
+        c = cube(len, view, cos(i), sin(i));
+        display(c, latency);
     }
 }
 */
