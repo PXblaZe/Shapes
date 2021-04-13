@@ -36,14 +36,19 @@ void display(Cube cube, int latency) {
                     }
                 } else if (_==cube.p1[1]) {
                     if (cube.p1[0]<cube.p2[0]) {
-                        for (__ = 1; __<cube.p2[0]; __++) {
-                            if (__<cube.p1[0]) printf(" ");
-                            else printf("*");
+                        for (__ = 1; __<=lp; __++) {
+                            if (__>=cube.p1[0]&&__<=cube.p2[0]) printf("*");
+                            else if (__==cube.p3[0]||__==cube.p4[0]) printf(".");
+                            else printf(" ");
                         }
                     } else {
-                        for (__ = 1; __<cube.p1[0]; __++) {
-                            if (__<cube.p2[0]) printf(" ");
-                            else printf(".");
+                        for (__ = 1; __<=lp; __++) {
+                            if (__>=cube.p2[0]&&__<=cube.p1[0]) {
+                                if (__==cube.p3[0]||__==cube.p4[0]) printf("*");
+                                else printf(".");
+                            }
+                            else if (__==cube.p3[0]||__==cube.p4[0]) printf("*");
+                            else printf(" ");
                         }
                     }
                 } else {
@@ -92,14 +97,19 @@ void display(Cube cube, int latency) {
             } else {
                 if (_==cube.p4[1]+cube.len-1) {
                     if (cube.p3[0]<cube.p4[0]) {
-                        for (__ = 1; __<cube.p4[0]; __++) {
-                            if (__<cube.p3[0]) printf(" ");
-                            else printf("*");
+                        for (__ = 1; __<=lp; __++) {
+                            if (__>=cube.p3[0]&&__<=cube.p4[0]) printf("*");
+                            else if (__==cube.p2[0]||__==cube.p1[0]) printf(".");
+                            else printf(" ");
                         }
                     } else {
-                        for (__ = 1; __<cube.p3[0]; __++) {
-                            if (__<cube.p4[0]) printf(" ");
-                            else printf(".");
+                        for (__ = 1; __<=lp; __++) {
+                            if (__>=cube.p4[0]&&__<=cube.p3[0]) {
+                                if (__==cube.p2[0]||__==cube.p1[0]) printf("*");
+                                else printf(".");
+                            }
+                            else if (__==cube.p2[0]||__==cube.p1[0]) printf("*");
+                            else printf(" ");
                         }
                     }
                 } else if (_==cube.p1[1]+cube.len-1) {
