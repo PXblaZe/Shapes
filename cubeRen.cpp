@@ -281,7 +281,8 @@ int main(int argc, char const *argv[]) {
     float dp[24];
 
     // float angy = M_PI/2e3, angx = M_PI/2e3, angz = M_PI/6e3;
-    float sx, sy;
+    float sx, sy, rx, ry;
+    sx = sy = rx = ry = 0;
     bool iss = true;
 
 
@@ -302,12 +303,13 @@ int main(int argc, char const *argv[]) {
         #pragma omp critical
         {
         if (mi.button == GLFW_MOUSE_BUTTON_LEFT && mi.action == GLFW_PRESS) {
-            if (iss) sx = mi.xpos, sy = mi.ypos, iss = false;
+            if (iss) sx = mi.xpos-rx+sx, sy = mi.ypos-ry+sy, iss = false;
             c.reset_positionVertices();
             c.rotate_normaly(-2*M_PI*(mi.xpos-sx)/800.0);
             c.rotate_normalx(-2*M_PI*(mi.ypos-sy)/600.0);
             // c.rotate_normalz(-2*M_PI*(sqrt(mi.xpos*mi.xpos + mi.ypos*mi.ypos)/sqrt(640000+360000)));
-            std::cout << "Cursor pos: {" << mi.xpos << ", " << mi.ypos << "}, InSideWindow = " << (mi.isCursorEnteredWindow?"true":"false") << ", O: {" << sx << ", " << sy << "}" << std::endl;
+            rx = mi.xpos, ry = mi.ypos;
+            std::cout << "Cursor pos: {" << mi.xpos << ", " << mi.ypos << "}, InSideWindow = " << (mi.isCursorEnteredWindow?"true":"false") << ", O: {" << sx << ", " << sy << "}, R: {" << rx << ", " << ry << "}\n"; ;
         }
         else if (mi.button == GLFW_MOUSE_BUTTON_LEFT && mi.action == GLFW_RELEASE) iss = true;
         c.get_positionVertices(posv);
