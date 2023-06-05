@@ -36,8 +36,6 @@ inline bool disGLERlog(const char* funname, const char* filename, size_t line) {
 }
 
 
-typedef bool (*Sex)(const char* male, const char* female);
-
 class Cuboid {
 
     float data[24] = {};
@@ -167,6 +165,8 @@ struct MouseInputs {
 } mi;
 
 
+int fbwidth, fbheight;
+
 
 void cpcall(GLFWwindow* win, double x, double y) {
     mi.xpos = x, mi.ypos = y;
@@ -181,7 +181,13 @@ void mbcall(GLFWwindow* win, int button, int action, int mods) {
     mi.button = button, mi.action = action;
 }
 
+void fbscall(GLFWwindow* win, int width, int height) {
+    fbwidth = width, fbheight = height;
+}
 
+void wscall(GLFWwindow* win, int w, int h) {
+    glViewport(0, 0, fbwidth, fbheight);
+}
 
 
 int main(int argc, char const *argv[]) {
@@ -190,12 +196,19 @@ int main(int argc, char const *argv[]) {
 
     if (!glfwInit()) return -1;
 
+    // glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+
     win  = glfwCreateWindow(800, 600, "Cube", nullptr, nullptr);
 
     if (win == nullptr) {
         glfwTerminate();
         return -1;
     }
+
+    // glfwSetWindowSize(win, 1920, 1080);
+    // glfwSetWindowPos(win, 0, 0);
+
+    // glfwSetWindowSizeLimits(win, 1920, 1080, 1920, 1080);
     
     glfwMakeContextCurrent(win);
 
@@ -205,8 +218,15 @@ int main(int argc, char const *argv[]) {
     glfwSetCursorPosCallback(win, cpcall);
     glfwSetCursorEnterCallback(win, cecall);
     glfwSetMouseButtonCallback(win, mbcall);
+    glfwSetFramebufferSizeCallback(win, fbscall);
+    glfwSetWindowSizeCallback(win, wscall);
 
-    glewInit();
+    if (glewInit() != GLEW_OK) {
+        glfwDestroyWindow(win);
+        glfwTerminate();
+        return -1;
+    }
+    
 
     Cuboid c;
     c.set_positionVertices(1, 1, 1);
@@ -263,6 +283,7 @@ int main(int argc, char const *argv[]) {
     // float angy = M_PI/2e3, angx = M_PI/2e3, angz = M_PI/6e3;
     float sx, sy;
     bool iss = true;
+
 
     while (!glfwWindowShouldClose(win)) {
         #pragma omp parallel
