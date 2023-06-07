@@ -285,10 +285,13 @@ int main(int argc, char const *argv[]) {
     sx = sy = rx = ry = 0;
     bool iss = true;
 
+    size_t totalFrame = 0;
+    double fps=0, avgfps=0, pavgf=0;
+    double currentTime=0, elapsedTime=0, previousTime = glfwGetTime();
 
     while (!glfwWindowShouldClose(win)) {
-        #pragma omp parallel
-        {
+        // #pragma omp parallel
+        // {
         glClear(GL_COLOR_BUFFER_BIT);
         // glGetBufferSubData(GL_ARRAY_BUFFER, 0, 24*4, dp);
         // for (int i = 0; i < 8; i++) {
@@ -300,24 +303,39 @@ int main(int argc, char const *argv[]) {
         GLcall(glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr));
 
         
-        #pragma omp critical
-        {
+        // #pragma omp critical
+        // {
         if (mi.button == GLFW_MOUSE_BUTTON_LEFT && mi.action == GLFW_PRESS) {
             if (iss) sx = mi.xpos-rx+sx, sy = mi.ypos-ry+sy, iss = false;
             c.reset_positionVertices();
             c.rotate_normaly(-2*M_PI*(mi.xpos-sx)/800.0);
             c.rotate_normalx(-2*M_PI*(mi.ypos-sy)/600.0);
             // c.rotate_normalz(-2*M_PI*(sqrt(mi.xpos*mi.xpos + mi.ypos*mi.ypos)/sqrt(640000+360000)));
+            // std::cout << "Cursor pos: {" << mi.xpos << ", " << mi.ypos << "}, InSideWindow = " << (mi.isCursorEnteredWindow?"true":"false") << ", O: {" << sx << ", " << sy << "}, R: {" << rx << ", " << ry << "}\n"; ;
             rx = mi.xpos, ry = mi.ypos;
-            std::cout << "Cursor pos: {" << mi.xpos << ", " << mi.ypos << "}, InSideWindow = " << (mi.isCursorEnteredWindow?"true":"false") << ", O: {" << sx << ", " << sy << "}, R: {" << rx << ", " << ry << "}\n"; ;
         }
         else if (mi.button == GLFW_MOUSE_BUTTON_LEFT && mi.action == GLFW_RELEASE) iss = true;
         c.get_positionVertices(posv);
-        }
+        // }
 
         glBufferSubData(GL_ARRAY_BUFFER, 0, 24*4, posv);
 
-        }
+        // }
+
+        currentTime = glfwGetTime();
+        elapsedTime = currentTime - previousTime;
+        previousTime = currentTime;
+
+        totalFrame++;
+
+        fps = 1/elapsedTime;
+        avgfps += fps;
+        avgfps = totalFrame==1? avgfps: avgfps/2;
+
+        if (!(totalFrame%30)) pavgf = avgfps;
+        
+        std::cout << "Current FPS: " << fps << "\nAverage FPS: " << round(pavgf) << std::endl << "\033[2J" << "\033[1;1H";
+
         glfwSwapBuffers(win);
         glfwPollEvents();
         
