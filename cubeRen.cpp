@@ -290,8 +290,8 @@ int main(int argc, char const *argv[]) {
     double currentTime=0, elapsedTime=0, previousTime = glfwGetTime();
 
     while (!glfwWindowShouldClose(win)) {
-        // #pragma omp parallel
-        // {
+        #pragma omp parallel
+        {
         glClear(GL_COLOR_BUFFER_BIT);
         // glGetBufferSubData(GL_ARRAY_BUFFER, 0, 24*4, dp);
         // for (int i = 0; i < 8; i++) {
@@ -303,8 +303,8 @@ int main(int argc, char const *argv[]) {
         GLcall(glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, nullptr));
 
         
-        // #pragma omp critical
-        // {
+        #pragma omp critical
+        {
         if (mi.button == GLFW_MOUSE_BUTTON_LEFT && mi.action == GLFW_PRESS) {
             if (iss) sx = mi.xpos-rx+sx, sy = mi.ypos-ry+sy, iss = false;
             c.reset_positionVertices();
@@ -316,11 +316,11 @@ int main(int argc, char const *argv[]) {
         }
         else if (mi.button == GLFW_MOUSE_BUTTON_LEFT && mi.action == GLFW_RELEASE) iss = true;
         c.get_positionVertices(posv);
-        // }
+        }
 
         glBufferSubData(GL_ARRAY_BUFFER, 0, 24*4, posv);
 
-        // }
+        }
 
         currentTime = glfwGetTime();
         elapsedTime = currentTime - previousTime;
